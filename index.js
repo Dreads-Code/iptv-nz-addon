@@ -10,9 +10,6 @@ const regions = require('./regions.json');
 
 app.set('trust proxy', true)
 
-app.use('/configure', express.static(path.join(__dirname, 'vue', 'dist')));
-app.use('/assets', express.static(path.join(__dirname, 'vue', 'dist', 'assets')));
-
 app.use(cors())
 
 
@@ -23,24 +20,7 @@ app.get('/', (_, res) => {
 });
 
 
-app.get('/:configuration?/configure', (_, res) => {
-	res.setHeader('Cache-Control', 'max-age=86400,staleRevalidate=stale-while-revalidate, staleError=stale-if-error, public');
-	res.setHeader('content-type', 'text/html');
-	res.sendFile(path.join(__dirname, 'vue', 'dist', 'index.html'));
-});
-
-
-app.get('/manifest.json', (_, res) => {
-	res.setHeader('Cache-Control', 'max-age=86400, public');
-	res.setHeader('Content-Type', 'application/json');
-	manifest.catalogs = [];
-	manifest.behaviorHints.configurationRequired = true;
-	res.send(manifest);
-	res.end();
-});
-
-
-app.get('/:configuration/manifest.json', (req, res) => {
+app.get('/:configuration?/manifest.json', (req, res) => {
 	//let manifesto = manifest;
 	manifest.catalogs = [];
 	configuration = atob(req.params.configuration)

@@ -2,17 +2,33 @@
   "version": 2,
   "builds": [
     {
-      "src": "index.js",
-      "use": "@vercel/node",
+      "src": "vue/package.json",
+      "use": "@vercel/static-build",
       "config": {
-        "includeFiles": ["vue/dist/**"]
+        "distDir": "dist"
       }
+    },
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
+      "src": "/assets/(.*)",
+      "dest": "/vue/dist/assets/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/vue/dist/favicon.ico"
+    },
+    {
+      "src": "/configure",
+      "dest": "/vue/dist/index.html"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/index.js"
+      "dest": "index.js"
     }
   ]
 }

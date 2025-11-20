@@ -15,7 +15,7 @@
 		"fast-xml-parser": "^5.3.2",
 		"iptv-playlist-parser": "^0.12.1",
 		"node-cache": "^5.1.2",
-		"stremio-addon-sdk": "^0.7.1"
+		"stremio-addon-sdk": "^1.6.10"
 	},
 	"devDependencies": {
 		"nodemon": "^3.1.11"

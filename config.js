@@ -1,11 +1,11 @@
-var env = process.env.NODE_ENV ? 'beamup' : 'local';
+var env = process.env.VERCEL_URL ? 'vercel' : 'local';
 
 var config = {}
 
 switch (env) {
-  case 'beamup':
+  case 'vercel':
     config.port = process.env.PORT
-    config.local = "https://2ecbbd610840-stremio-iptv.baby-beamup.club/manifest.json"
+    config.local = "https://" + process.env.VERCEL_URL;
     break;
 
   case 'local':

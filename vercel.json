@@ -9,44 +9,34 @@
       }
     },
     {
-      "version": 2,
-      "builds": [
-        {
-          "src": "vue/package.json",
-          "use": "@vercel/static-build",
-          "config": {
-            "distDir": "dist"
-          }
-        },
-        {
-          "src": "index.js",
-          "use": "@vercel/node"
-        }
-      ],
-      "routes": [
-        {
-          "src": "/manifest.json",
-          "dest": "/index.js"
-        },
-        {
-          "src": "/(catalog|meta|stream)/.*",
-          "dest": "/index.js"
-        },
-        {
-          "src": "/assets/(.*)",
-          "dest": "/vue/assets/$1"
-        },
-        {
-          "src": "/favicon.ico",
-          "dest": "/vue/favicon.ico"
-        },
-        {
-          "src": "/(.*\\.(png|jpg|jpeg|svg|ico))",
-          "dest": "/vue/$1"
-        },
-        {
-          "src": "/(.*)",
-          "dest": "/vue/index.html"
-        }
-      ]
+      "src": "index.js",
+      "use": "@vercel/node"
     }
+  ],
+  "routes": [
+    {
+      "src": "/manifest.json",
+      "dest": "/index.js"
+    },
+    {
+      "src": "/(catalog|meta|stream)/.*",
+      "dest": "/index.js"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/vue/assets/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/vue/favicon.ico"
+    },
+    {
+      "src": "/(.*\\.(png|jpg|jpeg|svg|ico))",
+      "dest": "/vue/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/vue/index.html"
+    }
+  ]
+}

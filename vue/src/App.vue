@@ -40,7 +40,7 @@
                             </a>
                             <a id="web_install_button" :href="webInstallUrl" target="_blank" class="w-full">
                                 <button type="button"
-                                    class="w-full text-blue-700 bg-white border-2 border-blue-600 hover:bg-blue-50 focus:ring-4 focus:ring-blue-300 font-bold rounded-xl text-lg px-5 py-4 text-center shadow-md transform transition hover:-translate-y-0.5">
+                                    class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:ring-blue-300 font-bold rounded-xl text-lg px-5 py-4 text-center shadow-lg transform transition hover:-translate-y-0.5">
                                     Install on Stremio Web
                                 </button>
                             </a>

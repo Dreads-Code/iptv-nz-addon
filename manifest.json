@@ -1,26 +1,35 @@
 {
-	"id": "nz-iptv",
+    "id": "kiwi-free-iptv",
     "version": "0.0.1",
-    "name": "NZ IPTV",
-    "description": "Addon for NZ TV channels! Huge thanks for iptv.org",
-    "logo": "https://i.imgur.com/982WZT3.png",
-	"background":"https://github.com/Stremio/stremio-art/raw/main/originals/Jesiel%20Rocha%20Lofhagen.png",
-    "contactEmail": "test@gmail.com",
-
+    "name": "Kiwi Free IPTV",
+    "description": "Addon for NZ TV channels! Huge thanks to https://www.matthuisman.nz/",
+    "logo": "/logo.png",
+    "background": "/background.png",
+    "contactEmail": "dreads.code@gmail.com",
     "catalogs": [],
     "resources": [
-		{
+        {
             "name": "stream",
-            "types": ["tv"],
-            "idPrefixes": ["stremio_iptv_id:"]
-        }, 
-		{
-			"name": "meta",
-            "types": ["tv"],
-            "idPrefixes": ["stremio_iptv_id:"]
-		}
+            "types": [
+                "tv"
+            ],
+            "idPrefixes": [
+                "stremio_iptv_id:"
+            ]
+        },
+        {
+            "name": "meta",
+            "types": [
+                "tv"
+            ],
+            "idPrefixes": [
+                "stremio_iptv_id:"
+            ]
+        }
     ],
-    "types": ["tv"],
+    "types": [
+        "tv"
+    ],
     "behaviorHints": {
         "configurable": true,
         "configurationRequired": true

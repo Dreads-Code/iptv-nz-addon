@@ -6,14 +6,17 @@ const path = require('path');
 
 const iptv = require("./iptv");
 var manifest = require("./manifest.json");
+const config = require('./config.js');
 
 app.set('trust proxy', true)
 
 app.use(cors())
 
+app.use(express.static(path.join(__dirname, 'vue', 'dist')));
+app.use(express.static(path.join(__dirname, 'vue', 'public')));
+
 app.get('/', (_, res) => {
-	res.redirect('/manifest.json')
-	res.end();
+	res.sendFile(path.join(__dirname, 'vue', 'dist', 'index.html'));
 });
 
 
@@ -28,7 +31,13 @@ app.get('/manifest.json', (req, res) => {
 	manifest.behaviorHints.configurationRequired = false;
 	res.setHeader('Cache-Control', 'max-age=86400,staleRevalidate=stale-while-revalidate, staleError=stale-if-error, public');
 	res.setHeader('Content-Type', 'application/json');
-	res.send(manifest);
+
+	// Create a copy of the manifest to avoid mutating the original require cache
+	const manifestCopy = { ...manifest };
+	manifestCopy.logo = config.local + manifest.logo;
+	manifestCopy.background = config.local + manifest.background;
+
+	res.send(manifestCopy);
 	res.end();
 });
 

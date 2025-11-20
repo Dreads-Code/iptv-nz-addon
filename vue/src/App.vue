@@ -24,66 +24,6 @@
                         <div class="items-center mt-6 description">
                             <h2 class="font-semibold text-lg text-gray-800 mb-2">This addon contains:</h2>
                             <ul class="list-disc list-inside text-gray-600" v-html="stylizedTypes.map(t => `<li>${t}</li>`).join('')"></ul>
-                        </div>
-
-                        <div class="flex items-center justify-center space-x-2 mt-8">
-                            <span class="h-px w-full bg-gray-300/50"></span>
-                        </div>
-
-                        <!-- Install Button -->
-                        <div class="mt-8 flex flex-col">
-                            <a id="install_button" :href="installUrl" class="w-full">
-                                <button type="button"
-                                    class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:ring-blue-300 font-bold rounded-xl text-lg px-5 py-4 text-center shadow-lg transform transition hover:-translate-y-0.5">
-                                    Install Addon
-                                </button>
-                            </a>
-                        </div>
-
-                        <!-- Footer -->
-                        <div class="mt-6 flex flex-col">
-                            <p class="text-center text-sm text-gray-500">
-                                Created by <a href="https://github.com/Dreads-Code" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium transition-colors">Dreads-Code</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
-
-<script setup>
-import { ref, onMounted } from 'vue';
-import { useHead } from "@vueuse/head";
-import * as manifest from '../../manifest.json';
-
-const stylizedTypes = manifest.types.map(t => t[0].toUpperCase() + t.slice(1));
-
-useHead({
-    title: manifest.name + ' - Stremio Addon',
-    link: [
-        {
-            rel: "icon",
-            type: "image/svg+xml",
-            href: manifest.logo,
-        }
-    ],
-})
-
-const installUrl = ref('#');
-
-onMounted(() => {
-    const location = window.location.host + '/manifest.json';
-    installUrl.value = 'stremio://' + location;
-});
-
-</script>
-
-
-<style scoped>
-.logo {
-    max-width: 200px;
 }
 
 .bg-img {

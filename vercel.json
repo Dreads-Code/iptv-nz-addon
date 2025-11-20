@@ -15,6 +15,14 @@
   ],
   "routes": [
     {
+      "src": "/manifest.json",
+      "dest": "index.js"
+    },
+    {
+      "src": "/(catalog|meta|stream)/.*",
+      "dest": "index.js"
+    },
+    {
       "src": "/assets/(.*)",
       "dest": "/vue/dist/assets/$1"
     },
@@ -23,12 +31,12 @@
       "dest": "/vue/dist/favicon.ico"
     },
     {
-      "src": "/configure",
-      "dest": "/vue/dist/index.html"
+      "src": "/(.*\\.(png|jpg|jpeg|svg|ico))",
+      "dest": "/vue/dist/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "index.js"
+      "dest": "/vue/dist/index.html"
     }
   ]
 }

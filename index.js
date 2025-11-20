@@ -23,8 +23,14 @@ app.get('/', (_, res) => {
 app.get('/:configuration?/manifest.json', (req, res) => {
 	//let manifesto = manifest;
 	manifest.catalogs = [];
-	configuration = atob(req.params.configuration)
-	let { providors, costume, costumeLists } = iptv.ConfigCache(req.params.configuration)
+	let providors, costume, costumeLists;
+	if (req.params.configuration) {
+		configuration = atob(req.params.configuration)
+		let configData = iptv.ConfigCache(req.params.configuration)
+		if (configData) {
+			({ providors, costume, costumeLists } = configData);
+		}
+	}
 	if (costume) {
 		for (let i = 0; i < costume.length; i++) {
 			let [id, name, url] = costume[i].split(":")

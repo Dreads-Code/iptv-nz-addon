@@ -6,61 +6,25 @@ const path = require('path');
 
 const iptv = require("./iptv");
 var manifest = require("./manifest.json");
-const regions = require('./regions.json');
 
 app.set('trust proxy', true)
 
 app.use(cors())
 
-
-
 app.get('/', (_, res) => {
-	res.redirect('/configure')
+	res.redirect('/manifest.json')
 	res.end();
 });
 
 
-app.get('/:configuration?/manifest.json', (req, res) => {
-	//let manifesto = manifest;
-	manifest.catalogs = [];
-	let providors, costume, costumeLists;
-	if (req.params.configuration) {
-		configuration = atob(req.params.configuration)
-		let configData = iptv.ConfigCache(req.params.configuration)
-		if (configData) {
-			({ providors, costume, costumeLists } = configData);
-		}
-	}
-	if (costume) {
-		for (let i = 0; i < costume.length; i++) {
-			let [id, name, url] = costume[i].split(":")
-			manifest.catalogs.push({
-				"type": "tv",
+app.get('/manifest.json', (req, res) => {
+	manifest.catalogs = [{
+		"type": "tv",
+		"id": "stremio_iptv_id:nz",
+		"name": "New Zealand TV",
+		"extra": [{ name: "search", isRequired: false }]
+	}];
 
-				"id": "stremio_iptv_id:" + id,
-
-				"name": name,
-
-				extra: [{ name: "search", isRequired: false }]
-			});
-		};
-	}
-	if (providors)
-		for (let i = 0; i < providors.length; i++) {
-			manifest.catalogs.push({
-				"type": "tv",
-
-				"id": "stremio_iptv_id:" + providors[i],
-
-				"name": regions[providors[i]].name,
-
-				extra: [{ name: "search", isRequired: false }]
-			});
-		};
-
-	//console.log(catalog)
-	//manifesto.catalogs = catalog;	
-	console.log(manifest.catalogs)
 	manifest.behaviorHints.configurationRequired = false;
 	res.setHeader('Cache-Control', 'max-age=86400,staleRevalidate=stale-while-revalidate, staleError=stale-if-error, public');
 	res.setHeader('Content-Type', 'application/json');
@@ -69,47 +33,37 @@ app.get('/:configuration?/manifest.json', (req, res) => {
 });
 
 
-app.get('/:configuration?/:resource(catalog|meta|stream)/:type/:id/:extra?.json', (req, res) => {
+app.get('/:resource(catalog|meta|stream)/:type/:id/:extra?.json', (req, res) => {
 
 	res.setHeader('Cache-Control', 'max-age=86400,staleRevalidate=stale-while-revalidate, staleError=stale-if-error, public');
 	res.setHeader('Content-Type', 'application/json');
 
-
-
 	console.log(req.params);
-	let { configuration, resource, type, id} = req.params;
-	let extra =  Object.fromEntries(new URLSearchParams(req.params.extra));
-	let { providors, costume, costumeLists } = iptv.ConfigCache(configuration)
-	console.log(extra)
-	console.log("costume", costume)
-
-	let region = id.split(":")[1];
-	let costumeList = costumeLists[region] ? atob(costumeLists[region].url) : '';
+	let { resource, type, id } = req.params;
+	let extra = req.params.extra ? Object.fromEntries(new URLSearchParams(req.params.extra)) : {};
 
 	if (resource == "catalog") {
 		if ((type == "tv")) {
-			console.log('id', id)
-			console.log("catalog", region);
-			if(extra && extra.search){
+			if (extra && extra.search) {
 				console.log("search", extra.search);
-				iptv.search(region, costumeList,extra.search)
-				.then((metas) => {
-					res.send(JSON.stringify({ metas }));
-					res.end();
-				}).catch(error => console.error(error));
-			}else{
-			iptv.catalog(region, costumeList)
-				.then((metas) => {
-					res.send(JSON.stringify({ metas }));
-					res.end();
-				}).catch(error => console.error(error));
+				iptv.search(extra.search)
+					.then((metas) => {
+						res.send(JSON.stringify({ metas }));
+						res.end();
+					}).catch(error => console.error(error));
+			} else {
+				iptv.catalog()
+					.then((metas) => {
+						res.send(JSON.stringify({ metas }));
+						res.end();
+					}).catch(error => console.error(error));
 			}
 		}
 	}
 	else if (resource == "meta") {
 		if ((type == "tv")) {
 			console.log("meta", id);
-			iptv.meta(id, costumeList)
+			iptv.meta(id)
 				.then((meta) => {
 					console.log(meta)
 					res.send(JSON.stringify({ meta }));
@@ -121,7 +75,7 @@ app.get('/:configuration?/:resource(catalog|meta|stream)/:type/:id/:extra?.json'
 	else if (resource == "stream") {
 		if ((type == "tv")) {
 			console.log("stream", id);
-			iptv.stream(id, costumeList)
+			iptv.stream(id)
 				.then((stream) => {
 					console.log(stream)
 					res.send(JSON.stringify({ streams: stream }));
@@ -135,3 +89,4 @@ app.get('/:configuration?/:resource(catalog|meta|stream)/:type/:id/:extra?.json'
 })
 
 module.exports = app
+

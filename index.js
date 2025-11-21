@@ -34,8 +34,12 @@ app.get('/manifest.json', (req, res) => {
 
 	// Create a copy of the manifest to avoid mutating the original require cache
 	const manifestCopy = { ...manifest };
-	manifestCopy.logo = config.local + manifest.logo;
-	manifestCopy.background = config.local + manifest.background;
+	const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+	const host = req.get('host');
+	const baseUrl = `${protocol}://${host}`;
+
+	manifestCopy.logo = baseUrl + manifest.logo;
+	manifestCopy.background = baseUrl + manifest.background;
 
 	res.send(manifestCopy);
 	res.end();

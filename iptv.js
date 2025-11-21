@@ -7,6 +7,19 @@ const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
 const M3U8_URL = "https://i.mjh.nz/nz/raw-tv.m3u8";
 const EPG_URL = "https://i.mjh.nz/nz/epg.xml";
 
+function parseEpgTime(timeStr) {
+    // Format: YYYYMMDDHHMMSS +0000
+    // Example: 20251123235000 +0000
+    if (!timeStr) return null;
+    const year = timeStr.substring(0, 4);
+    const month = timeStr.substring(4, 6) - 1; // Months are 0-indexed
+    const day = timeStr.substring(6, 8);
+    const hour = timeStr.substring(8, 10);
+    const minute = timeStr.substring(10, 12);
+    const second = timeStr.substring(12, 14);
+    return new Date(Date.UTC(year, month, day, hour, minute, second));
+}
+
 async function fetchData() {
     let data = cache.get("data");
     if (data) return data;
@@ -24,8 +37,9 @@ async function fetchData() {
 
         const channels = {};
         const epgMap = {};
+        const programmesMap = {};
 
-        // Process EPG
+        // Process EPG Channels
         if (epg.tv && epg.tv.channel) {
             const epgChannels = Array.isArray(epg.tv.channel) ? epg.tv.channel : [epg.tv.channel];
             epgChannels.forEach(c => {
@@ -37,6 +51,27 @@ async function fetchData() {
             });
         }
 
+        // Process EPG Programmes
+        if (epg.tv && epg.tv.programme) {
+            const epgProgrammes = Array.isArray(epg.tv.programme) ? epg.tv.programme : [epg.tv.programme];
+            epgProgrammes.forEach(p => {
+                const channelId = p['@_channel'];
+                if (!programmesMap[channelId]) {
+                    programmesMap[channelId] = [];
+                }
+                programmesMap[channelId].push({
+                    start: parseEpgTime(p['@_start']),
+                    stop: parseEpgTime(p['@_stop']),
+                    title: p.title,
+                    desc: p.desc,
+                    icon: p.icon ? p.icon['@_src'] : null,
+                    category: p.category,
+                    rating: p.rating ? (Array.isArray(p.rating) ? p.rating[0].value : p.rating.value) : null,
+                    date: p.date
+                });
+            });
+        }
+
         // Process M3U8
         playlist.items.forEach(item => {
             const tvgId = item.tvg.id;
@@ -44,6 +79,7 @@ async function fetchData() {
 
             // Merge with EPG data if available
             const epgData = epgMap[tvgId] || {};
+            const channelProgrammes = programmesMap[tvgId] || [];
 
             channels[channelId] = {
                 id: "stremio_iptv_id:" + channelId,
@@ -55,6 +91,7 @@ async function fetchData() {
                 logo: item.tvg.logo || epgData.icon,
                 description: `Watch ${item.name}`,
                 url: item.url,
+                programmes: channelProgrammes, // Store programmes
                 behaviorHints: {
 
                 }
@@ -111,15 +148,51 @@ async function meta(id) {
     const channels = await fetchData();
     const channel = channels.find(c => c.id === id);
     if (!channel) return null;
-    return {
+
+    let metaObj = {
         id: channel.id,
         name: channel.name,
         type: channel.type,
         poster: channel.poster,
         background: channel.background,
         logo: channel.logo,
-        description: channel.description
+        description: channel.description,
+        behaviorHints: {
+            defaultVideoId: channel.id // Ensure it plays the stream
+        }
     };
+
+    // Find current program
+    if (channel.programmes && channel.programmes.length > 0) {
+        const now = new Date();
+        const currentProgram = channel.programmes.find(p => p.start <= now && p.stop > now);
+
+        if (currentProgram) {
+            metaObj.name = currentProgram.title || channel.name;
+
+            let desc = currentProgram.desc || "";
+            if (currentProgram.rating) {
+                desc = `[${currentProgram.rating}] ${desc}`;
+            }
+            metaObj.description = desc + "\n\n" + channel.description;
+
+            if (currentProgram.icon) {
+                metaObj.poster = currentProgram.icon;
+                metaObj.background = currentProgram.icon;
+            }
+            if (currentProgram.start && currentProgram.stop) {
+                metaObj.runtime = (currentProgram.stop - currentProgram.start) / 1000 / 60; // minutes
+            }
+            if (currentProgram.date) {
+                metaObj.releaseInfo = currentProgram.date;
+            }
+            if (currentProgram.category) {
+                metaObj.genres = Array.isArray(currentProgram.category) ? currentProgram.category : [currentProgram.category];
+            }
+        }
+    }
+
+    return metaObj;
 }
 
 async function stream(id) {

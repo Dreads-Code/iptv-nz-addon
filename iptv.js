@@ -127,10 +127,24 @@ async function stream(id) {
     const channel = channels.find(c => c.id === id);
     if (!channel) return [];
 
+    let streamUrl = channel.url;
+    try {
+        // Resolve redirect to get the final URL so relative paths work in Stremio Web
+        const response = await axios.head(channel.url, {
+            maxRedirects: 5,
+            validateStatus: null
+        });
+        if (response.request && response.request.res && response.request.res.responseUrl) {
+            streamUrl = response.request.res.responseUrl;
+        }
+    } catch (e) {
+        console.error(`Error resolving stream URL for ${id}:`, e.message);
+    }
+
     return [{
         name: channel.name,
         title: channel.name,
-        url: channel.url,
+        url: streamUrl,
         behaviorHints: channel.behaviorHints
     }];
 }

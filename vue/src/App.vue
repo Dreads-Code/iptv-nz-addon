@@ -86,7 +86,7 @@ onMounted(() => {
     const manifestUrl = protocol + '//' + host + '/manifest.json';
     
     installUrl.value = 'stremio://' + host + '/manifest.json';
-    webInstallUrl.value = 'https://web.stremio.com/#/addon/' + encodeURIComponent(manifestUrl);
+    webInstallUrl.value = 'https://web.stremio.com/#/addon/' + encodeURIComponent(host + '/manifest.json');
 });
 
 </script>

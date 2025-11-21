@@ -1,7 +1,7 @@
 {
-	"name": "nz-iptv",
-	"version": "0.0.1",
-	"description": "Addon for New Zealand TV channels",
+	"name": "kiwi-free-iptv",
+	"version": "0.0.2",
+	"description": "Addon for NZ TV channels with EPG data for currently on shows, runtime, age ratings and IMDB ratings. Huge thanks to https://www.matthuisman.nz/",
 	"main": "server.js",
 	"scripts": {
 		"start": "node server.js",

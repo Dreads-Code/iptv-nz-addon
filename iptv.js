@@ -171,7 +171,7 @@ async function meta(id) {
         if (currentProgram) {
             metaObj.name = currentProgram.title || channel.name;
 
-            // Description without rating prefix
+            // Description
             metaObj.description = (currentProgram.desc || "") + "\n\n" + channel.description;
 
             if (currentProgram.icon) {

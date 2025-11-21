@@ -1,8 +1,8 @@
 {
     "id": "kiwi-free-iptv",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "name": "Kiwi Free IPTV",
-    "description": "Addon for NZ TV channels! Huge thanks to https://www.matthuisman.nz/",
+    "description": "Addon for NZ TV channels with EPG data for currently on shows, runtime, age ratings and IMDB ratings. Huge thanks to https://www.matthuisman.nz/",
     "logo": "/logo.png",
     "background": "/background.png",
     "contactEmail": "dreads.code@gmail.com",

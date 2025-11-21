@@ -67,6 +67,7 @@ async function fetchData() {
                     icon: p.icon ? p.icon['@_src'] : null,
                     category: p.category,
                     rating: p.rating ? (Array.isArray(p.rating) ? p.rating[0].value : p.rating.value) : null,
+                    starRating: p['star-rating'] ? (Array.isArray(p['star-rating']) ? p['star-rating'][0].value : p['star-rating'].value) : null,
                     date: p.date
                 });
             });
@@ -170,11 +171,8 @@ async function meta(id) {
         if (currentProgram) {
             metaObj.name = currentProgram.title || channel.name;
 
-            let desc = currentProgram.desc || "";
-            if (currentProgram.rating) {
-                desc = `[${currentProgram.rating}] ${desc}`;
-            }
-            metaObj.description = desc + "\n\n" + channel.description;
+            // Description without rating prefix
+            metaObj.description = (currentProgram.desc || "") + "\n\n" + channel.description;
 
             if (currentProgram.icon) {
                 metaObj.poster = currentProgram.icon;
@@ -186,8 +184,18 @@ async function meta(id) {
             if (currentProgram.date) {
                 metaObj.releaseInfo = currentProgram.date;
             }
+
+            // Genres: Categories + Rating + IMDb Rating
+            metaObj.genres = [];
             if (currentProgram.category) {
-                metaObj.genres = Array.isArray(currentProgram.category) ? currentProgram.category : [currentProgram.category];
+                const cats = Array.isArray(currentProgram.category) ? currentProgram.category : [currentProgram.category];
+                metaObj.genres.push(...cats);
+            }
+            if (currentProgram.rating) {
+                metaObj.genres.push(currentProgram.rating);
+            }
+            if (currentProgram.starRating) {
+                metaObj.genres.push(`IMDb: ${currentProgram.starRating}`);
             }
         }
     }

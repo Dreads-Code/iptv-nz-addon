@@ -56,7 +56,7 @@ async function fetchData() {
                 description: `Watch ${item.name}`,
                 url: item.url,
                 behaviorHints: {
-                    notWebReady: true // Assume not web ready for safety, or check headers
+
                 }
             };
 

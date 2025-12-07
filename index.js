@@ -45,14 +45,17 @@ app.get('/manifest.json', (req, res) => {
 	res.end();
 });
 
+const handler = (req, res, next) => {
+	let { resource, type, id } = req.params;
 
-app.get('/:resource(catalog|meta|stream)/:type/:id/:extra?.json', (req, res) => {
+    if (!['catalog', 'meta', 'stream'].includes(resource)) {
+        return next();
+    }
 
 	res.setHeader('Cache-Control', 'max-age=86400,staleRevalidate=stale-while-revalidate, staleError=stale-if-error, public');
 	res.setHeader('Content-Type', 'application/json');
 
 	console.log(req.params);
-	let { resource, type, id } = req.params;
 	let extra = req.params.extra ? Object.fromEntries(new URLSearchParams(req.params.extra)) : {};
 
 	if (resource == "catalog") {
@@ -99,7 +102,9 @@ app.get('/:resource(catalog|meta|stream)/:type/:id/:extra?.json', (req, res) => 
 		res.end();
 	}
 
-})
+};
+
+app.get('/:resource/:type/:id/:extra.json', handler);
+app.get('/:resource/:type/:id.json', handler);
 
 module.exports = app
-

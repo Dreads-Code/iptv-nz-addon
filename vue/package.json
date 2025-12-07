@@ -9,18 +9,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vueuse/head": "^0.7.10",
-    "flowbite": "^1.5.3",
-    "slugify": "^1.6.5",
-    "vue": "^3.2.37",
+    "@vueuse/head": "^2.0.0",
+    "flowbite": "^4.0.1",
+    "slugify": "^1.6.6",
+    "vue": "^3.5.25",
     "vue3-draggable": "^2.0.9",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^3.1.0",
-    "autoprefixer": "^10.4.8",
-    "postcss": "^8.4.16",
-    "tailwindcss": "^3.1.8",
-    "vite": "^3.1.0"
+    "@tailwindcss/postcss": "^4.1.17",
+    "@vitejs/plugin-vue": "^6.0.2",
+    "autoprefixer": "^10.4.22",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.17",
+    "vite": "^7.2.6"
   }
 }
